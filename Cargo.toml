@@ -3,3 +3,9 @@ members = [
     "intuition",
     "hashsum",
 ]
+
+[workspace.package]
+edition = "2021"
+authors = ["Cavey Cool <caveycool@gmail.com>"]
+license = "MIT or Apache-2.0"
+repository = "https://github.com/cavemanloverboy/intuition"
