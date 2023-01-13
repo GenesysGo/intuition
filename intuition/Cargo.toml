@@ -1,7 +1,11 @@
 [package]
 name = "intuition"
 version = "0.1.0"
-edition = "2021"
+description = "Gain intuition about the goings-on of your multithreaded/multicomponent programs"
+edition = { workspace = true }
+authors = { workspace = true }
+license = { workspace = true }
+repository = { workspace = true }
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
