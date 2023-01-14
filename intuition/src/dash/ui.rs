@@ -186,6 +186,7 @@ where
                         .map(|a| *a as f64)
                         .collect::<Vec<f64>>(),
                 )
+		.filter(|(x, y)| *y > 0.00)
                 .collect();
 
             let dataset: Dataset = Dataset::default()

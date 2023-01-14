@@ -23,7 +23,7 @@ pub struct Hasher<T: Send + Sum> {
 
 impl<T: Send + Sum + Pod> Hasher<T> {
     pub fn new(rx: Receiver<T>) -> (Self, Receiver<Sha256Hash>) {
-        let (tx_, rx_) = bounded(100);
+        let (tx_, rx_) = bounded(1_000);
 
         let hasher = Sha256::new();
         (

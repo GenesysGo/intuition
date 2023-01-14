@@ -11,7 +11,7 @@ pub struct Summer<T: Send + Sum, const S: usize> {
 
 impl<T: Send + Sum, const S: usize> Summer<T, S> {
     pub fn new(rx: Receiver<[T; S]>) -> (Self, Receiver<T>) {
-        let (tx_, rx_) = bounded(100_000);
+        let (tx_, rx_) = bounded(1_000_000);
         (
             Summer {
                 generator_to_summer_rx: rx,

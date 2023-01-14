@@ -14,7 +14,7 @@ where
     Standard: Distribution<[T; S]>,
 {
     pub fn new() -> (Self, Receiver<[T; S]>) {
-        let (tx, rx) = bounded(100_000);
+        let (tx, rx) = bounded(1_000_000);
         (
             Generator {
                 generator_to_summer_tx: tx,

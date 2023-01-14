@@ -33,7 +33,7 @@ impl Heap {
                 // Add hash to heap
                 self.heap.push(hash);
 
-                if rand::random::<f32>() < 1e-6 {
+                if self.heap.len() == 1_500_000 {
                     self.heap.append(&mut self.heap.clone());
                     PROFILER.heap.warn("expensive operation detected");
                 }
