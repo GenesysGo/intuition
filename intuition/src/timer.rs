@@ -40,6 +40,7 @@ impl Display for LogLevel {
 }
 
 impl<const W: usize, const A: usize> Timer<W, A> {
+    /// Record an iteration time in nanoseconds
     pub fn iteration<T, F: FnOnce() -> T>(&self, iter: F) -> T {
         let start = Instant::now();
         let output = iter();
@@ -124,7 +125,7 @@ impl<const W: usize, const A: usize> Default for Timer<W, A> {
             total_count: AtomicUsize::new(0),
             total_time: AtomicUsize::new(0),
             // Allocate for A elements
-            recent_averages: Mutex::new(vec![0;A]),
+            recent_averages: Mutex::new(vec![0; A]),
             current_count: AtomicUsize::new(0),
             current_time: AtomicUsize::new(0),
             logs: Mutex::new(vec![]),

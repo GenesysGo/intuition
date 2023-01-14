@@ -18,20 +18,40 @@ use super::profiler::{LogBuffer, ProfilerExt, StateBuffer};
 
 mod ui;
 
+/// The profiler dashboard!
 pub struct Dash<P: ProfilerExt + 'static> {
+    /// A reference to a profiler you must construct via [crate::construct_profiler].
     profiler: &'static P,
+    /// A buffer for the state of your scopes and recent average measurements
     state_buffer: StateBuffer,
-    tabs: TabsState<'static>,
-    q_counter: u8,
-    should_quit: bool,
-    show_log: bool,
+    /// A buffer for the logs of your scopes
     log_buffer: LogBuffer,
-    // Just so we don't allocate
+    /// Tabs (unused presently but will be used soon)
+    tabs: TabsState<'static>,
+    /// Counts how many times you've pressed q in a row
+    q_counter: u8,
+    /// Flags whether the dashboard should quit
+    should_quit: bool,
+    /// Flags whether the dashboard should show logs for each scope
+    show_log: bool,
+    // Just so we don't calc + allocate on every iteration
     domain: Vec<f64>,
 }
 
 impl<P: ProfilerExt + 'static> Dash<P> {
-    pub fn from_profiler(profiler: &'static P) -> Dash<P> {
+    /// Construct a dashboard from a static reference to a Profiler.
+    ///
+    /// ```rust, no_run
+    /// use intuition::{construct_profiler, Dash};
+    ///
+    /// construct_profiler!(MyProgramProfiler for MyProgram: part_1, part_2);
+    /// static PROFILER: MyProgramProfiler<10, 10> = MyProgramProfiler::new();
+    ///
+    /// let mut dash = Dash::from_profiler(&PROFILER);
+    /// dash.run(std::time::Duration::from_millis(50));
+    /// ```
+    pub fn from_profiler(p: &'static impl ::core::ops::Deref<Target = P>) -> Dash<P> {
+        let profiler = p.deref();
         Dash {
             profiler,
             state_buffer: profiler.state_buffer(),
@@ -44,6 +64,7 @@ impl<P: ProfilerExt + 'static> Dash<P> {
         }
     }
 
+    /// After constructing a [Dash], start up the dashboard.
     pub fn run(&mut self, tick_rate: Duration) -> Result<(), Box<dyn Error>> {
         // setup terminal
         enable_raw_mode()?;
@@ -105,7 +126,7 @@ impl<P: ProfilerExt + 'static> Dash<P> {
         }
     }
 
-    pub fn on_key(&mut self, key: char) {
+    fn on_key(&mut self, key: char) {
         match key {
             // Quit key
             'q' => {
@@ -135,23 +156,23 @@ impl<P: ProfilerExt + 'static> Dash<P> {
         }
     }
 
-    pub fn on_up(&mut self) {
+    fn on_up(&mut self) {
         // do nothing for now
     }
 
-    pub fn on_down(&mut self) {
+    fn on_down(&mut self) {
         // do nothing for now
     }
 
-    pub fn on_right(&mut self) {
+    fn on_right(&mut self) {
         self.tabs.next();
     }
 
-    pub fn on_left(&mut self) {
+    fn on_left(&mut self) {
         self.tabs.previous();
     }
 
-    pub fn on_tick(&mut self) {
+    fn on_tick(&mut self) {
         // Update state buffer
         self.profiler.update_buffer(&mut self.state_buffer);
         // Update log buffer
@@ -159,20 +180,20 @@ impl<P: ProfilerExt + 'static> Dash<P> {
     }
 }
 
-pub struct TabsState<'a> {
-    pub titles: Vec<&'a str>,
-    pub index: usize,
+struct TabsState<'a> {
+    titles: Vec<&'a str>,
+    index: usize,
 }
 
 impl<'a> TabsState<'a> {
-    pub fn new(titles: Vec<&'a str>) -> TabsState {
+    fn new(titles: Vec<&'a str>) -> TabsState {
         TabsState { titles, index: 0 }
     }
-    pub fn next(&mut self) {
+    fn next(&mut self) {
         self.index = (self.index + 1) % self.titles.len();
     }
 
-    pub fn previous(&mut self) {
+    fn previous(&mut self) {
         if self.index > 0 {
             self.index -= 1;
         } else {

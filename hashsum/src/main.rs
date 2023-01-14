@@ -1,17 +1,12 @@
-use std::ops::Deref;
-
 use crate::components::{generator::Generator, hasher::Hasher, heap::Heap, summer::Summer};
 use intuition::{construct_profiler, dash::Dash};
 
-use once_cell::sync::Lazy;
-
 pub mod components;
 
-construct_profiler!(Profiler for Traced: generator, summer, hasher, heap);
-
+construct_profiler!(HashSum: generator, summer, hasher, heap);
 const WINDOW_SIZE: usize = 1_000;
 const AVERAGES: usize = 1_000;
-static PROFILER: Lazy<Profiler<WINDOW_SIZE, AVERAGES>> = Lazy::new(Profiler::new);
+static PROFILER: Profiler<WINDOW_SIZE, AVERAGES> = Profiler::new();
 
 const GENERATOR_STOP_COUNT: usize = AVERAGES * WINDOW_SIZE * 1_000_000;
 
@@ -23,7 +18,7 @@ fn main() {
     let mut heap = Heap::new(rx);
 
     // Initialize dashboard
-    let mut dash = Dash::from_profiler(PROFILER.deref());
+    let mut dash = Dash::from_profiler(&PROFILER);
 
     println!("starting up modules");
     let handles = vec![

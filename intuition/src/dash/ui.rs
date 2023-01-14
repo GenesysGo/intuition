@@ -31,7 +31,7 @@ const ERROR_LOG_STYLE: Style = Style {
     sub_modifier: Modifier::empty(),
 };
 
-pub fn draw<B, P>(f: &mut Frame<B>, dash: &mut Dash<P>)
+pub(super) fn draw<B, P>(f: &mut Frame<B>, dash: &mut Dash<P>)
 where
     B: Backend,
     P: ProfilerExt,
@@ -56,8 +56,6 @@ where
     // Render particular tab
     match dash.tabs.index {
         0 => draw_first_tab(f, dash, chunks[1]),
-        1 => {} //draw_second_tab(f, dash, chunks[1]),
-        2 => {} //draw_third_tab(f, dash, chunks[1]),
         _ => {}
     };
 }
@@ -67,77 +65,8 @@ where
     B: Backend,
     P: ProfilerExt,
 {
-    // let chunks = Layout::default()
-    //     .constraints(
-    //         [
-    //             Constraint::Length(9),
-    //             Constraint::Min(8),
-    //             Constraint::Length(7),
-    //         ]
-    //         .as_ref(),
-    //     )
-    //     .split(area);
-    // draw_gauges(f, dash, chunks[0]);
-    // draw_charts(f, dash, chunks[1]);
-    // draw_text(f, chunks[2]);
-
     draw_charts(f, dash, area);
 }
-
-// fn draw_gauges<B, P>(f: &mut Frame<B>, dash: &mut Dash<P>, area: Rect)
-// where
-//     B: Backend,
-//     P: ProfilerExt,
-// {
-//     let chunks = Layout::default()
-//         .constraints(
-//             [
-//                 Constraint::Length(2),
-//                 Constraint::Length(3),
-//                 Constraint::Length(1),
-//             ]
-//             .as_ref(),
-//         )
-//         .margin(1)
-//         .split(area);
-//     let block = Block::default().borders(Borders::ALL).title("Graphs");
-//     f.render_widget(block, area);
-
-//     let label = format!("{:.2}%", app.progress * 100.0);
-//     let gauge = Gauge::default()
-//         .block(Block::default().title("Gauge:"))
-//         .gauge_style(
-//             Style::default()
-//                 .fg(Color::Magenta)
-//                 .bg(Color::Black)
-//                 .add_modifier(Modifier::ITALIC | Modifier::BOLD),
-//         )
-//         .label(label)
-//         .ratio(app.progress);
-//     f.render_widget(gauge, chunks[0]);
-
-//     // let sparkline = Sparkline::default()
-//     //     .block(Block::default().title("Sparkline:"))
-//     //     .style(Style::default().fg(Color::Green))
-//     //     .data(&app.sparkline.points)
-//     //     .bar_set(if app.enhanced_graphics {
-//     //         symbols::bar::NINE_LEVELS
-//     //     } else {
-//     //         symbols::bar::THREE_LEVELS
-//     //     });
-//     // f.render_widget(sparkline, chunks[1]);
-
-//     // let line_gauge = LineGauge::default()
-//     //     .block(Block::default().title("LineGauge:"))
-//     //     .gauge_style(Style::default().fg(Color::Magenta))
-//     //     .line_set(if app.enhanced_graphics {
-//     //         symbols::line::THICK
-//     //     } else {
-//     //         symbols::line::NORMAL
-//     //     })
-//     //     .ratio(app.progress);
-//     // f.render_widget(line_gauge, chunks[2]);
-// }
 
 #[allow(unused_labels)]
 fn draw_charts<B, P>(f: &mut Frame<B>, app: &mut Dash<P>, area: Rect)
@@ -166,8 +95,6 @@ where
             )
             .split(chunks[0]);
 
-        // Draw scope plots
-
         // Colors we cycle through
         const COLORS: [Color; 4] = [Color::Cyan, Color::Red, Color::Yellow, Color::Magenta];
 
@@ -186,7 +113,7 @@ where
                         .map(|a| *a as f64)
                         .collect::<Vec<f64>>(),
                 )
-		.filter(|(x, y)| *y > 0.00)
+                .filter(|(_x, y)| *y > 0.00)
                 .collect();
 
             let dataset: Dataset = Dataset::default()
