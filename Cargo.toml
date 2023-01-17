@@ -8,4 +8,4 @@ members = [
 edition = "2021"
 authors = ["Cavey Cool <caveycool@gmail.com>"]
 license = "GPL-3.0-or-later"
-repository = "https://github.com/cavemanloverboy/intuition"
+repository = "https://github.com/GenesysGo/intuition"
