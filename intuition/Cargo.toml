@@ -1,6 +1,6 @@
 [package]
 name = "intuition"
-version = "0.2.0"
+version = "0.2.1"
 description = "Gain intuition about the goings-on of your multithreaded/multicomponent programs"
 edition = { workspace = true }
 authors = { workspace = true }
